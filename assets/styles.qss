@@ -1,0 +1,89 @@
+QMainWindow {
+    background-color: rgb(53, 53, 53);
+}
+
+QPushButton {
+    background-color: rgba(0, 0, 0, 80);
+    color: white;
+    border-radius: 10px;
+    font: 14pt "CozetteVector";
+}
+
+QPushButton:hover {
+   background-color: rgba(0, 0, 0, 100);
+   color: white;
+   border-radius: 10px;
+   font: 13pt "CozetteVector";
+}
+
+QLineEdit {
+    border-radius: 15px;
+    background-color:rgb(255, 255, 255);
+    color:rgb(0, 0, 0);
+    font: 14pt "CozetteVector";
+}
+
+QLineEdit#Incorrect {
+    border-radius: 15px;
+    background-color:rgb(255, 255, 255);
+    color:rgb(255, 0, 0);
+    font: 14pt "CozetteVector";
+}
+
+QTableWidget {
+    border: 0;
+    font: 14pt "CozetteVector";
+    gridline-color:black;
+
+}
+
+QPushButton#Run {
+    background-color: rgba(0, 0, 0, 80);
+    color: rgb(0, 255, 0);
+    border-radius: 10px;
+    font: 14pt "CozetteVector";
+}
+
+QPushButton#Run:hover {
+   background-color: rgba(0, 0, 0, 100);
+   color: rgb(0, 255, 0);
+   border-radius: 10px;
+   font: 13pt "CozetteVector";
+}
+
+QPushButton#Stop {
+    background-color: rgba(0, 0, 0, 80);
+    color: rgb(255, 0, 0);
+    border-radius: 10px;
+    font: 14pt "CozetteVector";
+}
+
+QPushButton#Stop:hover {
+   background-color: rgba(0, 0, 0, 100);
+   color: rgb(255, 0, 0);
+   border-radius: 10px;
+   font: 13pt "CozetteVector";
+}
+
+QLabel#Apparatus {
+    border-image: url("/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/bg.jpg");
+}
+
+QLabel#RibbonText {
+    font: 30pt "CozetteVector";
+    color: black;
+    margin-left: 7px;
+    margin-top: 7px;
+    border-image: none;
+}
+
+QWidget#Mario_d {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_default.png);
+}
+
+QWidget#selected{
+    border: 0;
+    font: 14pt "CozetteVector";
+    gridline-color:black;
+    background-color:rgb(0, 200, 0);
+}
