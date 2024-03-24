@@ -21,23 +21,6 @@ TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     this->setColumnCount(2);
     this->setRowCount(2);
 
-    // auto btn = new QPushButton;
-    // connect(btn, &QPushButton::pressed, [this] {
-    //     if (this->parent() != nullptr) {
-    //         this->setParent(nullptr);
-    //     } else {
-    //         this->setParent(prnt);
-    //         this->setGeometry({
-    //             0, 0, 500, 280
-    //         });
-    //     }
-    //     this->setStyleSheet(prnt->styleSheet());
-    //     this->show();
-    // });
-    //
-    // this->setCellWidget(0, 0, btn);
-    // btn->show();
-
     this->setItem(0, 0, new QTableWidgetItem);
     this->setItem(1, 0, new QTableWidgetItem("0"));
 
@@ -123,6 +106,24 @@ TableWidget& TableWidget::operator=(const TableWidget& other) {
             }
         }
     }
+    this->prnt = other.prnt;
+
+    delete btn;
+    btn = new QPushButton(this);
+    connect(btn, &QPushButton::pressed, [this] {
+        if (this->parent() != nullptr) {
+            this->setParent(nullptr);
+        } else {
+            this->setParent(prnt);
+            this->setGeometry({
+                0, 0, 500, 280
+            });
+        }
+        this->setStyleSheet(prnt->styleSheet());
+        this->show();
+    });
+    this->setCellWidget(0, 0, btn);
+
     return *this;
 }
 

@@ -2,6 +2,7 @@
 // Qt
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QPushButton>
 
 class Window;
 
@@ -18,5 +19,6 @@ private:
     void clearPaint() const;
     static void paint(QTableWidgetItem*);
     QWidget* prnt;
+    QPushButton* btn;
     [[nodiscard]] int getColumn(const QString&) const;
 };
