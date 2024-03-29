@@ -1,8 +1,13 @@
 #include "../include/Apparatus.h"
+
+#include <qeventloop.h>
+
 #include "../include/Window.h"
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QScrollBar>
+#include <QPropertyAnimation>
+#include <QTimer>
 
 Apparatus::Apparatus(QWidget* parent) : QLabel(parent) {
     this->setGeometry({
@@ -17,6 +22,7 @@ Apparatus::Apparatus(QWidget* parent) : QLabel(parent) {
         ptr = ptr->parentWidget();
     }
     window = dynamic_cast<Window*>(ptr);
+    table = window->table;
 }
 
 void Apparatus::CreateRibbon() {
@@ -56,6 +62,7 @@ void Apparatus::CreateMario() {
 
 void Apparatus::SetString(const QString& str) {
     Ribbon->horizontalScrollBar()->setValue(250);
+    TableScrollBar = 250;
     TablePos = 250 + 9;
     Mario->setGeometry({
         462, 317 + 13, 50, 50
@@ -69,7 +76,80 @@ void Apparatus::SetString(const QString& str) {
         const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, i)->children()[0]);
         cell->setText(QString(str[i - TablePos]));
     }
-    state = 0;
+    State = 0;
 }
 
+void Apparatus::step() {
+    // command := {((symbol & ![<, >]) |& [<, >] |& state) | (!)}, 1 <= size <= 3
+    const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
+    QString command = table->getCommand(cell->text()[0], State);
+    if (command == "!") return;
+    if (command[0] == '>' || command[0] == '<') {
+        if (command[0] == '>') GoRight();
+        else GoLeft();
+        if (command.size() >= 2) {
+            State = command.mid(1, command.size() - 1).toInt();
+        }
+        return;
+    }
+    cell->setText(command[0]);
+    if (command[1] == '>') {
+        // JumpRight();
+        GoRight();
+    } else {
+        // JumpLeft();
+        // GoLeft();
+    }
+    --steps;
+    if (steps < 0) {
+        steps = 0;
+        return;
+    }
+    if (steps == 0) {
+        emit finish();
+    }
+}
+
+void Apparatus::GoRight() {
+    ++TablePos;
+    if (Mario->pos() == QPoint{962, 330}) {
+        const auto mario = new QPropertyAnimation(Mario, "pos");
+        mario->setEndValue(QPoint{712, 330});
+        mario->setDuration(1000l / speed);
+        mario->setEasingCurve(QEasingCurve::InOutExpo);
+
+        const auto ribbon = new QPropertyAnimation(Ribbon, "pos");
+        ribbon->setTargetObject(Ribbon->horizontalScrollBar());
+        ribbon->setPropertyName("value");
+        ribbon->setEndValue(TableScrollBar += 6);
+        ribbon->setDuration(900l / speed);
+        ribbon->setEasingCurve(QEasingCurve::InOutExpo);
+
+        mario->start();
+        ribbon->start();
+
+        QEventLoop loop;
+        connect(ribbon, &QPropertyAnimation::finished, &loop, &QEventLoop::exit);
+        loop.exec();
+
+        return;
+    }
+    const auto mario = new QPropertyAnimation(Mario, "pos");
+    mario->setEndValue(Mario->pos() + QPoint{50, 0});
+    mario->setDuration(300 / speed);
+
+    const auto changer = new QTimer;
+    changer->setInterval(50 / speed);
+
+    changer->start();
+    QEventLoop loop;
+
+    connect(mario, &QPropertyAnimation::finished, [this, changer, &loop] {
+        Mario->setObjectName("Mario_d");
+        changer->stop();
+        delete changer;
+        loop.exit(0);
+    });
+    loop.exec();
+}
 

@@ -1,5 +1,6 @@
 #include "../include/Window.h"
 #include <QLineEdit>
+#include <QTimer>
 
 Window::Window(QWidget* parent) : QMainWindow(parent) {
     this->loadStyles();
@@ -99,8 +100,8 @@ void Window::HideFirstScreen() {
 }
 
 void Window::SecondScreen() {
-    apparatus = new Apparatus(central);
     table = new TableWidget(central);
+    apparatus = new Apparatus(central);
     table->style = this->StyleSheet;
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
@@ -121,8 +122,7 @@ void Window::SecondScreen() {
        530, 0, 60, 60
     });
     addState->setStyleSheet(this->StyleSheet);
-    connect(addState, &QPushButton::pressed, table,
-        &TableWidget::addState);
+    connect(addState, &QPushButton::pressed, table, &TableWidget::addState);
 
     const auto removeState = new QPushButton(central);
     objects["RemoveState"] = removeState;
@@ -131,8 +131,7 @@ void Window::SecondScreen() {
        630, 0, 60, 60
     });
     removeState->setStyleSheet(this->StyleSheet);
-    connect(removeState, &QPushButton::pressed, table,
-        &TableWidget::removeState);
+    connect(removeState, &QPushButton::pressed, table, &TableWidget::removeState);
 
     const auto Step = new QPushButton(central);
     objects["Step"] = Step;
@@ -141,6 +140,15 @@ void Window::SecondScreen() {
         750, 0, 60, 60
     });
     Step->setStyleSheet(this->StyleSheet);
+    connect(Step, &QPushButton::pressed, [this] {
+        if (apparatus->steps == 0) {
+            const auto timer = new QTimer;
+            connect(timer, &QTimer::timeout, apparatus, &Apparatus::step);
+            connect(apparatus, &Apparatus::finish, timer, &QTimer::stop);
+            timer->start();
+        }
+        ++apparatus->steps;
+    });
 
     const auto Run = new QPushButton(central);
     Run->setObjectName("Run");

@@ -20,6 +20,7 @@ public:
     void IOG();// IOG == Initial Object Generation
     void FirstScreen();
     void SecondScreen();
+    TableWidget* table{};
 private:
     void ShowFirstScreen();
     void ShowSecondScreen();
@@ -28,7 +29,6 @@ private:
     std::map<const QString, QWidget*> objects{};
     QPushButton* title = new QPushButton(this);
     QWidget* central = new QWidget(this);
-    TableWidget* table{};
     QString StyleSheet{};
     Apparatus* apparatus{};
 };
