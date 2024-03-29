@@ -15,6 +15,7 @@ public:
     void removeState();
     void updateAlph(const QString&, const QString&);
     TableWidget& operator=(const TableWidget&);
+    QString style{};
 private:
     void clearPaint() const;
     static void paint(QTableWidgetItem*);

@@ -101,6 +101,7 @@ void Window::HideFirstScreen() {
 void Window::SecondScreen() {
     apparatus = new Apparatus(central);
     table = new TableWidget(central);
+    table->style = this->StyleSheet;
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
     reset->setText("Reset Alphabets!");

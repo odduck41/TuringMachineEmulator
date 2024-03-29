@@ -87,3 +87,10 @@ QWidget#selected{
     gridline-color:black;
     background-color:rgb(0, 200, 0);
 }
+
+QPushButton#table {
+    background-color: rgba(0, 0, 0, 80);
+    color: white;
+    font: 14pt "CozetteVector";
+    border-radius: 0px;
+}

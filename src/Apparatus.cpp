@@ -69,4 +69,7 @@ void Apparatus::SetString(const QString& str) {
         const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, i)->children()[0]);
         cell->setText(QString(str[i - TablePos]));
     }
+    state = 0;
 }
+
+

@@ -7,8 +7,6 @@
 TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     prnt = parent;
 
-    this->setStyleSheet(parent->styleSheet());
-
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
 
@@ -30,6 +28,8 @@ TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     this->item(1, 0)->setFlags(
         this->item(1, 0)->flags() & ~Qt::ItemIsEditable
     );
+
+    this->setSelectionMode(QAbstractItemView::NoSelection);
 }
 
 void TableWidget::addState() {
@@ -107,19 +107,18 @@ TableWidget& TableWidget::operator=(const TableWidget& other) {
         }
     }
     this->prnt = other.prnt;
-
-    delete btn;
     btn = new QPushButton(this);
+    btn->setObjectName("table");
     connect(btn, &QPushButton::pressed, [this] {
-        if (this->parent() != nullptr) {
+        if (this->parent() == prnt) {
             this->setParent(nullptr);
+            this->setStyleSheet(style);
         } else {
             this->setParent(prnt);
             this->setGeometry({
                 0, 0, 500, 280
             });
         }
-        this->setStyleSheet(prnt->styleSheet());
         this->show();
     });
     this->setCellWidget(0, 0, btn);

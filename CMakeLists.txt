@@ -20,6 +20,7 @@ add_executable(TuringMachineEmulator
         src/TableWidget.cpp
         include/Apparatus.h
         src/Apparatus.cpp
+        src/Apparatus.cpp
 
 )
 target_link_libraries(TuringMachineEmulator PRIVATE Qt6::Widgets)
