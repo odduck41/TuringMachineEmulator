@@ -1,5 +1,0 @@
-/home/lev/CLionProjects/TuringMachineEmulator/cmake-build-debug/CMakeFiles/TuringMachineEmulator.dir
-/home/lev/CLionProjects/TuringMachineEmulator/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/lev/CLionProjects/TuringMachineEmulator/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/lev/CLionProjects/TuringMachineEmulator/cmake-build-debug/CMakeFiles/TuringMachineEmulator_autogen_timestamp_deps.dir
-/home/lev/CLionProjects/TuringMachineEmulator/cmake-build-debug/CMakeFiles/TuringMachineEmulator_autogen.dir
