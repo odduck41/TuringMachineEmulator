@@ -2,9 +2,7 @@
 
 #include <qeventloop.h>
 
-#include "../include/Window.h"
 #include <QTableWidget>
-#include <QHeaderView>
 #include <QScrollBar>
 #include <QPropertyAnimation>
 #include <QTimer>
@@ -147,14 +145,14 @@ void Apparatus::GoRight() {
     if (Mario->pos() == QPoint{962, 330}) {
         const auto mario = new QPropertyAnimation(Mario, "pos");
         mario->setEndValue(QPoint{712, 330});
-        mario->setDuration(1000l / speed);
+        mario->setDuration((int)(1000 / speed));
         mario->setEasingCurve(QEasingCurve::InOutExpo);
 
         const auto ribbon = new QPropertyAnimation(Ribbon, "pos");
         ribbon->setTargetObject(Ribbon->horizontalScrollBar());
         ribbon->setPropertyName("value");
         ribbon->setEndValue(TableScrollBar += 6);
-        ribbon->setDuration(900l / speed);
+        ribbon->setDuration((int)(900 / speed));
         ribbon->setEasingCurve(QEasingCurve::InOutExpo);
 
         mario->start();
@@ -168,19 +166,18 @@ void Apparatus::GoRight() {
     }
     const auto mario = new QPropertyAnimation(Mario, "pos");
     mario->setEndValue(Mario->pos() + QPoint{50, 0});
-    mario->setDuration(300l / speed);
+    mario->setDuration((int)(300 / speed));
 
     const auto changer = new QTimer;
-    changer->setInterval(50l / speed);
+    changer->setInterval((int)(50 / speed));
 
     changer->start();
     QEventLoop loop;
-
-    connect(mario, &QPropertyAnimation::finished, [this, changer, &loop] {
+    connect(changer, &QTimer::destroyed, &loop, &QEventLoop::quit);
+    connect(mario, &QPropertyAnimation::finished, [this, changer] {
         Mario->setObjectName("Mario_d");
         changer->stop();
         delete changer;
-        loop.quit();
     });
     mario->start();
     loop.exec();

@@ -14,14 +14,14 @@
 class Apparatus;
 class Window final : public QMainWindow {
     Q_OBJECT
-public:
+  public:
     explicit Window(QWidget* = nullptr);
     void loadStyles(const QString& = "../assets/styles.qss");
     void IOG();// IOG == Initial Object Generation
     void FirstScreen();
     void SecondScreen();
     TableWidget* table{};
-private:
+  private:
     void ShowFirstScreen();
     void ShowSecondScreen();
     void HideFirstScreen();

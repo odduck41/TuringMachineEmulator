@@ -6,7 +6,7 @@
 class Window;
 class Apparatus final : public QLabel {
     Q_OBJECT
-public:
+  public:
     explicit Apparatus(QWidget* = nullptr);
     void CreateRibbon();
     void CreateMario();
@@ -16,17 +16,17 @@ public:
     void step();
     void inc();
     void dec();
-signals:
+  signals:
     void finish();
-private:
+  private:
     bool updated = false;
     double speed = 1;
     // void JumpLeft();
     // void JumpRight();
     // void GoLeft();
     void GoRight();
-    int TablePos;
-    int TableScrollBar;
+    int TablePos = 0;
+    int TableScrollBar = 0;
     TableWidget* table{};
     QTableWidget* Ribbon{};
     QWidget* Mario{};
