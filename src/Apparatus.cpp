@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include <QPropertyAnimation>
 #include <QTimer>
+#include <iostream>
 
 Apparatus::Apparatus(QWidget* parent) : QLabel(parent) {
     this->setGeometry({
@@ -61,13 +62,12 @@ void Apparatus::CreateMario() {
 }
 
 void Apparatus::SetString(const QString& str) {
+    emit finish();
+    State = 0;
+    steps = 0;
     Ribbon->horizontalScrollBar()->setValue(250);
     TableScrollBar = 250;
     TablePos = 250 + 9;
-    Mario->setGeometry({
-        462, 317 + 13, 50, 50
-    });
-    Mario->setObjectName("Mario_d");
     for (int i = 0; i < Ribbon->columnCount(); ++i) {
         const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, i)->children()[0]);
         cell->setText("λ");
@@ -76,29 +76,61 @@ void Apparatus::SetString(const QString& str) {
         const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, i)->children()[0]);
         cell->setText(QString(str[i - TablePos]));
     }
-    State = 0;
+    Mario->setGeometry({
+    462, 317 + 13, 50, 50
+    });
+    Mario->setObjectName("Mario_d");
+    updated = true;
 }
 
+void Apparatus::inc() {
+    if (speed < 2) {
+        speed += 0.1;
+    }
+}
+void Apparatus::dec() {
+    if (speed > 0.2) {
+        speed -= 0.1;
+    }
+}
+
+
+
 void Apparatus::step() {
+    updated = false;
     // command := {((symbol & ![<, >]) |& [<, >] |& state) | (!)}, 1 <= size <= 3
     const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
     QString command = table->getCommand(cell->text()[0], State);
-    if (command == "!") return;
-    if (command[0] == '>' || command[0] == '<') {
-        if (command[0] == '>') GoRight();
-        else GoLeft();
-        if (command.size() >= 2) {
-            State = command.mid(1, command.size() - 1).toInt();
-        }
+    if (command == "!") {
+        steps = 0;
+        emit finish();
         return;
     }
-    cell->setText(command[0]);
-    if (command[1] == '>') {
-        // JumpRight();
-        GoRight();
+    if (command[0] == '>' || command[0] == '<') {
+        if (command[0] == '>') GoRight();
+        // else GoLeft();
+        if (command.size() >= 2) {
+            State = command.sliced(1).toInt();
+        }
     } else {
-        // JumpLeft();
-        // GoLeft();
+        cell->setText(command[0]);
+        if (command[1] == '>') {
+            // JumpRight();
+            GoRight();
+        } else {
+            // JumpLeft();
+            // GoLeft();
+        }
+        if (command.size() >= 3) {
+            State = command.sliced(2).toInt();
+        }
+    }
+    if (updated) {
+        Mario->setGeometry({
+        462, 317 + 13, 50, 50
+        });
+        Mario->setObjectName("Mario_d");
+        updated = false;
     }
     --steps;
     if (steps < 0) {
@@ -129,17 +161,17 @@ void Apparatus::GoRight() {
         ribbon->start();
 
         QEventLoop loop;
-        connect(ribbon, &QPropertyAnimation::finished, &loop, &QEventLoop::exit);
+        connect(ribbon, &QPropertyAnimation::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         return;
     }
     const auto mario = new QPropertyAnimation(Mario, "pos");
     mario->setEndValue(Mario->pos() + QPoint{50, 0});
-    mario->setDuration(300 / speed);
+    mario->setDuration(300l / speed);
 
     const auto changer = new QTimer;
-    changer->setInterval(50 / speed);
+    changer->setInterval(50l / speed);
 
     changer->start();
     QEventLoop loop;
@@ -148,8 +180,9 @@ void Apparatus::GoRight() {
         Mario->setObjectName("Mario_d");
         changer->stop();
         delete changer;
-        loop.exit(0);
+        loop.quit();
     });
+    mario->start();
     loop.exec();
 }
 

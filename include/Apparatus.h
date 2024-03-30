@@ -13,11 +13,14 @@ public:
     void SetString(const QString&);
     int State = 0;
     int steps = 0;
-    double speed = 1;
     void step();
+    void inc();
+    void dec();
 signals:
     void finish();
 private:
+    bool updated = false;
+    double speed = 1;
     // void JumpLeft();
     // void JumpRight();
     // void GoLeft();

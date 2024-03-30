@@ -173,6 +173,7 @@ void Window::SecondScreen() {
         750, 90, 60, 60
     });
     SpeedDec->setStyleSheet(this->StyleSheet);
+    connect(SpeedDec, &QPushButton::pressed, apparatus, &Apparatus::dec);
 
     const auto ResetProgram = new QPushButton(central);
     objects["ResetProgram"] = ResetProgram;
@@ -190,6 +191,7 @@ void Window::SecondScreen() {
         950, 90, 60, 60
     });
     SpeedInc->setStyleSheet(this->StyleSheet);
+    connect(SpeedInc, &QPushButton::pressed, apparatus, &Apparatus::inc);
 
     const auto RibbonStr = new QLineEdit(central);
     objects["RibbonStr"] = RibbonStr;
