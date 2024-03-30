@@ -60,6 +60,7 @@ void Apparatus::CreateMario() {
 }
 
 void Apparatus::SetString(const QString& str) {
+    table->clearPaint();
     emit finish();
     State = 0;
     steps = 0;

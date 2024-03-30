@@ -14,10 +14,11 @@ class TableWidget final : public QTableWidget {
     void addState();
     void removeState();
     void updateAlph(const QString&, const QString&);
+    void clearPaint() const;
     TableWidget& operator=(const TableWidget&);
+
     QString style{};
   private:
-    void clearPaint() const;
     [[nodiscard]] int getColumn(const QString&) const;
     static void paint(QTableWidgetItem*);
     QWidget* prnt;
