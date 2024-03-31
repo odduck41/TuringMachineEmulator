@@ -64,6 +64,7 @@ void Apparatus::SetString(const QString& str) {
     emit finish();
     State = 0;
     steps = 0;
+    contains = false;
     Ribbon->horizontalScrollBar()->setValue(250);
     TableScrollBar = 250;
     TablePos = 250 + 9;
@@ -100,11 +101,12 @@ void Apparatus::step() {
     Ribbon->horizontalScrollBar()->setValue(TableScrollBar);
     const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
     QString command = table->getCommand(cell->text()[0], State);
-    if (command == "!") {
+    if (command == "!" || contains) {
         steps = 0;
         emit finish();
         return;
     }
+    contains = false;
     if (command[0] == '>' || command[0] == '<') {
         if (command[0] == '>') GoRight();
         else GoLeft();
@@ -127,6 +129,7 @@ void Apparatus::step() {
         } else {
             steps = 0;
             emit finish();
+            contains = true;
             return;
         }
         if (command.size() >= 3) {

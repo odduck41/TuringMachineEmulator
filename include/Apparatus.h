@@ -30,6 +30,7 @@ class Apparatus final : public QLabel {
     void GoRight();
     int TablePos = 0;
     int TableScrollBar = 0;
+    bool contains = false;
     TableWidget* table{};
     QTableWidget* Ribbon{};
     QWidget* Mario{};
