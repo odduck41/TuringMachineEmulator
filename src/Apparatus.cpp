@@ -113,7 +113,11 @@ void Apparatus::step() {
             State = command.sliced(1).toInt();
         }
     } else {
-        cell->setText(command[0]);
+        if (command[0] == '\\') {
+            cell->setText("λ");
+        } else {
+            cell->setText(command[0]);
+        }
         if (command[1] == '>') {
             JumpRight();
             GoRight();
@@ -303,4 +307,10 @@ void Apparatus::GoLeft() {
     });
     mario->start();
     loop.exec();
+}
+
+void Apparatus::run() {
+    steps = -1;
+    emit p_started();
+    step();
 }

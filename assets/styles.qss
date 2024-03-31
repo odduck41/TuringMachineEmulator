@@ -2,6 +2,12 @@ QMainWindow {
     background-color: rgb(53, 53, 53);
 }
 
+QLabel#Err {
+    background-color: rgba(0, 0, 0, 0);
+    color: red;
+    font 15pt "CozetteVector";
+}
+
 QPushButton {
     background-color: rgba(0, 0, 0, 80);
     color: white;

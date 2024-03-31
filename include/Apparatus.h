@@ -14,10 +14,13 @@ class Apparatus final : public QLabel {
     int State = 0;
     int steps = 0;
     void step();
+    void run();
     void inc();
     void dec();
   signals:
     void finish();
+    void p_started();
+    void p_finished();
   private:
     bool updated = false;
     double speed = 1;

@@ -150,6 +150,14 @@ void Window::SecondScreen() {
         ++apparatus->steps;
     });
 
+    const auto Pause = new QPushButton(central);
+    objects["Pause"] = Pause;
+    Pause->setText("⏸");
+    Pause->setGeometry({
+    950, 0, 60, 60
+    });
+    Pause->setStyleSheet(this->StyleSheet);
+
     const auto Run = new QPushButton(central);
     Run->setObjectName("Run");
     objects["Run"] = Run;
@@ -158,13 +166,21 @@ void Window::SecondScreen() {
         850, 0, 60, 60
     });
     Run->setStyleSheet(this->StyleSheet);
-    const auto Pause = new QPushButton(central);
-    objects["Pause"] = Pause;
-    Pause->setText("⏸");
-    Pause->setGeometry({
-        950, 0, 60, 60
+    connect(Run, &QPushButton::pressed, [this, Pause]{
+       const auto timer = new QTimer;
+       connect(timer, &QTimer::timeout, apparatus, &Apparatus::run);
+
+       connect(apparatus, &Apparatus::finish, [this, timer] {
+           timer->stop();
+           emit apparatus->p_finished();
+       });
+       connect(Pause, &QPushButton::pressed,  [this, timer] {
+           timer->stop();
+           emit apparatus->p_finished();
+       });
+       timer->start();
     });
-    Pause->setStyleSheet(this->StyleSheet);
+
 
     const auto SpeedDec = new QPushButton(central);
     objects["SpeedDec"] = SpeedDec;
@@ -210,6 +226,26 @@ void Window::SecondScreen() {
                 break;
             }
         }
+    });
+
+    connect(apparatus, &Apparatus::p_started, [this] {
+        objects["Reset"]->setEnabled(false);
+        objects["AddState"]->setEnabled(false);
+        objects["RemoveState"]->setEnabled(false);
+        objects["Step"]->setEnabled(false);
+        objects["Run"]->setEnabled(false);
+        objects["ResetProgram"]->setEnabled(false);
+        objects["RibbonStr"]->setEnabled(false);
+
+    });
+    connect(apparatus, &Apparatus::p_finished, [this] {
+        objects["Reset"]->setEnabled(true);
+        objects["AddState"]->setEnabled(true);
+        objects["RemoveState"]->setEnabled(true);
+        objects["Step"]->setEnabled(true);
+        objects["Run"]->setEnabled(true);
+        objects["ResetProgram"]->setEnabled(true);
+        objects["RibbonStr"]->setEnabled(true);
     });
     connect(RibbonStr, &QLineEdit::returnPressed, [this, RibbonStr]{
         if (RibbonStr->objectName() == "") apparatus->SetString(RibbonStr->text());
