@@ -127,6 +127,7 @@ void Apparatus::step() {
              JumpLeft();
              GoLeft();
         } else {
+            JumpRight();
             steps = 0;
             emit finish();
             contains = true;
