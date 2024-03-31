@@ -87,17 +87,17 @@ void Apparatus::inc() {
         speed += 0.1;
     }
 }
+
 void Apparatus::dec() {
     if (speed > 0.2) {
         speed -= 0.1;
     }
 }
 
-
-
 void Apparatus::step() {
     updated = false;
     // command := {((symbol & ![<, >]) |& [<, >] |& state) | (!)}, 1 <= size <= 3
+    Ribbon->horizontalScrollBar()->setValue(TableScrollBar);
     const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
     QString command = table->getCommand(cell->text()[0], State);
     if (command == "!") {
@@ -107,18 +107,19 @@ void Apparatus::step() {
     }
     if (command[0] == '>' || command[0] == '<') {
         if (command[0] == '>') GoRight();
-        // else GoLeft();
+        else GoLeft();
+
         if (command.size() >= 2) {
             State = command.sliced(1).toInt();
         }
     } else {
         cell->setText(command[0]);
         if (command[1] == '>') {
-            // JumpRight();
+            JumpRight();
             GoRight();
         } else {
-            // JumpLeft();
-            // GoLeft();
+             JumpLeft();
+             GoLeft();
         }
         if (command.size() >= 3) {
             State = command.sliced(2).toInt();
@@ -144,6 +145,7 @@ void Apparatus::step() {
 void Apparatus::GoRight() {
     ++TablePos;
     if (Mario->pos() == QPoint{962, 330}) {
+        if (TableScrollBar + 6 > 500) return;
         const auto mario = new QPropertyAnimation(Mario, "pos");
         mario->setEndValue(QPoint{712, 330});
         mario->setDuration((int)(1000 / speed));
@@ -172,11 +174,24 @@ void Apparatus::GoRight() {
     const auto changer = new QTimer;
     changer->setInterval((int)(50 / speed));
 
-    changer->start();
+    connect(changer, &QTimer::timeout, [this]{
+        if (Mario->objectName() == "Mario_d" || Mario->objectName() == "Mario_r3") {
+            Mario->setObjectName("Mario_r1");
+        } else if (Mario->objectName() == "Mario_r1") {
+            Mario->setObjectName("Mario_r2");
+        } else {
+            Mario->setObjectName("Mario_r3");
+        }
+        Mario->setStyleSheet(this->styleSheet());
+        std::cout << Mario->styleSheet().toStdString();
+    });
+    changer->start((int)(50 / speed));
+
     QEventLoop loop;
     connect(changer, &QTimer::destroyed, &loop, &QEventLoop::quit);
     connect(mario, &QPropertyAnimation::finished, [this, changer] {
         Mario->setObjectName("Mario_d");
+        Mario->setStyleSheet(this->styleSheet());
         changer->stop();
         delete changer;
     });
@@ -184,3 +199,108 @@ void Apparatus::GoRight() {
     loop.exec();
 }
 
+void Apparatus::JumpRight() {
+    Mario->setObjectName("Mario_j");
+    Mario->setStyleSheet(this->styleSheet());
+    const auto up = new QPropertyAnimation(Mario, "pos");
+    up->setEndValue(Mario->pos() - QPoint{0, 35});
+    up->setDuration((int)(200 / speed));
+    auto loop = new QEventLoop;
+    connect(up, &QPropertyAnimation::finished, loop, &QEventLoop::quit);
+    up->start();
+    loop->exec();
+    delete loop;
+
+    const auto down = new QPropertyAnimation(Mario, "pos");
+    down->setEndValue(Mario->pos() + QPoint{0, 35});
+    down->setDuration((int)(200 / speed));
+    loop = new QEventLoop;
+    connect(down, &QPropertyAnimation::finished, loop, &QEventLoop::quit);
+    down->start();
+    loop->exec();
+    delete loop;
+    Mario->setObjectName("Mario_d");
+    Mario->setStyleSheet(this->styleSheet());
+}
+
+void Apparatus::JumpLeft() {
+    Mario->setObjectName("Mario_jr");
+    Mario->setStyleSheet(this->styleSheet());
+    const auto up = new QPropertyAnimation(Mario, "pos");
+    up->setEndValue(Mario->pos() - QPoint{0, 35});
+    up->setDuration((int)(200 / speed));
+    auto loop = new QEventLoop;
+    connect(up, &QPropertyAnimation::finished, loop, &QEventLoop::quit);
+    up->start();
+    loop->exec();
+    delete loop;
+
+    const auto down = new QPropertyAnimation(Mario, "pos");
+    down->setEndValue(Mario->pos() + QPoint{0, 35});
+    down->setDuration((int)(200 / speed));
+    loop = new QEventLoop;
+    connect(down, &QPropertyAnimation::finished, loop, &QEventLoop::quit);
+    down->start();
+    loop->exec();
+    delete loop;
+    Mario->setObjectName("Mario_dr");
+    Mario->setStyleSheet(this->styleSheet());
+}
+
+void Apparatus::GoLeft() {
+    --TablePos;
+    if (Mario->pos() == QPoint{12, 330}) {
+        if (TableScrollBar - 6 < 0) return;
+        const auto mario = new QPropertyAnimation(Mario, "pos");
+        mario->setEndValue(QPoint{262, 330});
+        mario->setDuration((int)(1000 / speed));
+        mario->setEasingCurve(QEasingCurve::InOutExpo);
+
+        const auto ribbon = new QPropertyAnimation(Ribbon, "pos");
+        ribbon->setTargetObject(Ribbon->horizontalScrollBar());
+        ribbon->setPropertyName("value");
+        ribbon->setEndValue(TableScrollBar -= 6);
+        ribbon->setDuration((int)(900 / speed));
+        ribbon->setEasingCurve(QEasingCurve::InOutExpo);
+
+        mario->start();
+        ribbon->start();
+
+        QEventLoop loop;
+        connect(ribbon, &QPropertyAnimation::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        return;
+    }
+    const auto mario = new QPropertyAnimation(Mario, "pos");
+    mario->setEndValue(Mario->pos() - QPoint{50, 0});
+    mario->setDuration((int)(300 / speed));
+
+    const auto changer = new QTimer;
+    changer->setInterval((int)(50 / speed));
+    Mario->setObjectName("Mario_r3");
+
+    connect(changer, &QTimer::timeout, [this]{
+        if (Mario->objectName() == "Mario_d" || Mario->objectName() == "Mario_r3r") {
+            Mario->setObjectName("Mario_r1r");
+        } else if (Mario->objectName() == "Mario_r1r") {
+            Mario->setObjectName("Mario_r2r");
+        } else {
+            Mario->setObjectName("Mario_r3r");
+        }
+        Mario->setStyleSheet(this->styleSheet());
+        std::cout << Mario->styleSheet().toStdString();
+    });
+    changer->start((int)(50 / speed));
+
+    QEventLoop loop;
+    connect(changer, &QTimer::destroyed, &loop, &QEventLoop::quit);
+    connect(mario, &QPropertyAnimation::finished, [this, changer] {
+        Mario->setObjectName("Mario_dr");
+        Mario->setStyleSheet(this->styleSheet());
+        changer->stop();
+        delete changer;
+    });
+    mario->start();
+    loop.exec();
+}

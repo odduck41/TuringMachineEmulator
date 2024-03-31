@@ -21,9 +21,9 @@ class Apparatus final : public QLabel {
   private:
     bool updated = false;
     double speed = 1;
-    // void JumpLeft();
-    // void JumpRight();
-    // void GoLeft();
+    void JumpLeft();
+    void JumpRight();
+    void GoLeft();
     void GoRight();
     int TablePos = 0;
     int TableScrollBar = 0;

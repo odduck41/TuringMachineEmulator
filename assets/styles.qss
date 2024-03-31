@@ -81,6 +81,45 @@ QWidget#Mario_d {
     border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_default.png);
 }
 
+QWidget#Mario_dr {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_default_r.png);
+}
+
+QWidget#Mario_r1 {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run1.png);
+}
+
+QWidget#Mario_r2 {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run2.png);
+}
+
+QWidget#Mario_r3 {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run3.png);
+}
+
+
+QWidget#Mario_r1r {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run1_r.png);
+}
+
+QWidget#Mario_r2r {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run2_r.png);
+}
+
+QWidget#Mario_r3r {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_run3_r.png);
+}
+
+QWidget#Mario_j {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_jump.png);
+}
+
+QWidget#Mario_jr {
+    border-image: url(/home/lev/CLionProjects/TuringMachineEmulator/assets/mario/mario_jump_r.png);
+}
+
+
+
 QWidget#selected{
     border: 0;
     font: 14pt "CozetteVector";
