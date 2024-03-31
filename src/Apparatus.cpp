@@ -121,9 +121,13 @@ void Apparatus::step() {
         if (command[1] == '>') {
             JumpRight();
             GoRight();
-        } else {
+        } else if (command[1] == '<'){
              JumpLeft();
              GoLeft();
+        } else {
+            steps = 0;
+            emit finish();
+            return;
         }
         if (command.size() >= 3) {
             State = command.sliced(2).toInt();
