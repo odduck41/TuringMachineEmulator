@@ -102,6 +102,7 @@ void Window::HideFirstScreen() {
 void Window::SecondScreen() {
     table = new TableWidget(central);
     apparatus = new Apparatus(central);
+    apparatus->SetString("");
     table->style = this->StyleSheet;
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
