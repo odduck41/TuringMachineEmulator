@@ -104,6 +104,7 @@ void Window::SecondScreen() {
     apparatus = new Apparatus(central);
     apparatus->SetString("");
     table->style = this->StyleSheet;
+
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
     reset->setText("Reset Alphabets!");
