@@ -105,6 +105,29 @@ void Window::SecondScreen() {
     apparatus->SetString("");
     table->style = this->StyleSheet;
 
+    auto *first = new QLabel(central), *second = new QLabel(central);
+    auto *third = new QLabel(central);
+    first->setText("Table hasn't got !, so program never finish");
+    first->setGeometry({
+       530, 190, 160, 60
+    });
+    first->setWordWrap(true);
+    first->setObjectName("Err");
+    first->setStyleSheet(central->styleSheet());
+    connect(table, &TableWidget::correct, first, &QLabel::hide);
+    connect(table, &TableWidget::incorrect, first, &QLabel::show);
+    objects["firstErr"] = first;
+
+    second->setText("Cell is empty");
+    second->setGeometry({
+           530, 190, 160, 60
+    });
+    second->setWordWrap(true);
+    second->setObjectName("Err");
+    second->setStyleSheet(central->styleSheet());
+    connect(table, &TableWidget::not_found, second, &QLabel::show);
+    objects["secondErr"] = second;
+
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
     reset->setText("Reset Alphabets!");
@@ -143,6 +166,7 @@ void Window::SecondScreen() {
     });
     Step->setStyleSheet(this->StyleSheet);
     connect(Step, &QPushButton::pressed, [this] {
+        objects["secondErr"]->hide();
         if (apparatus->steps == 0) {
             const auto timer = new QTimer;
             connect(timer, &QTimer::timeout, apparatus, &Apparatus::step);
@@ -169,18 +193,19 @@ void Window::SecondScreen() {
     });
     Run->setStyleSheet(this->StyleSheet);
     connect(Run, &QPushButton::pressed, [this, Pause]{
-       const auto timer = new QTimer;
-       connect(timer, &QTimer::timeout, apparatus, &Apparatus::run);
+        objects["secondErr"]->hide();
+        const auto timer = new QTimer;
+        connect(timer, &QTimer::timeout, apparatus, &Apparatus::run);
 
-       connect(apparatus, &Apparatus::finish, [this, timer] {
+        connect(apparatus, &Apparatus::finish, [this, timer] {
+            timer->stop();
+            emit apparatus->p_finished();
+        });
+        connect(Pause, &QPushButton::pressed,  [this, timer] {
            timer->stop();
            emit apparatus->p_finished();
-       });
-       connect(Pause, &QPushButton::pressed,  [this, timer] {
-           timer->stop();
-           emit apparatus->p_finished();
-       });
-       timer->start();
+        });
+        timer->start();
     });
 
 
@@ -252,8 +277,19 @@ void Window::SecondScreen() {
     connect(RibbonStr, &QLineEdit::returnPressed, [this, RibbonStr]{
         if (RibbonStr->objectName() == "") apparatus->SetString(RibbonStr->text());
     });
-    connect(ResetProgram, &QPushButton::pressed, [RibbonStr] {
+    connect(ResetProgram, &QPushButton::pressed, [second, RibbonStr] {
+        second->hide();
         emit RibbonStr->returnPressed();
+    });
+
+    connect(table, &TableWidget::correct, [this]{
+        objects["Step"]->setEnabled(true);
+        objects["Run"]->setEnabled(true);
+    });
+
+    connect(table, &TableWidget::incorrect, [this]{
+        objects["Step"]->setEnabled(false);
+        objects["Run"]->setEnabled(false);
     });
 }
 
@@ -270,6 +306,7 @@ void Window::ShowSecondScreen() {
     objects["SpeedInc"]->show();
     objects["RibbonStr"]->show();
     apparatus->show();
+    table->check();
 }
 
 void Window::HideSecondScreen() {
@@ -284,5 +321,7 @@ void Window::HideSecondScreen() {
     objects["ResetProgram"]->hide();
     objects["SpeedInc"]->hide();
     objects["RibbonStr"]->hide();
+    objects["firstErr"]->hide();
+    objects["secondErr"]->hide();
     apparatus->hide();
 }

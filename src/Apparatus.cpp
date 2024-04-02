@@ -8,6 +8,10 @@
 #include <QTimer>
 #include <iostream>
 
+
+// ToDo: after programm finished check if alphabet in ribbon is correct
+// ToDo: check if command not defined
+
 Apparatus::Apparatus(QWidget* parent) : QLabel(parent) {
     this->setGeometry({
         0, 280, 1024, 424
@@ -101,6 +105,9 @@ void Apparatus::step() {
     Ribbon->horizontalScrollBar()->setValue(TableScrollBar);
     const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
     QString command = table->getCommand(cell->text()[0], State);
+    if (command == "FUCK") {
+        return;
+    }
     if (command == "!" || contains) {
         steps = 0;
         emit finish();

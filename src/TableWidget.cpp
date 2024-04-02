@@ -4,6 +4,9 @@
 #include <set>
 #include <QHBoxLayout>
 
+
+// ToDo: check if table has at least one !
+
 TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     prnt = parent;
 
@@ -30,6 +33,20 @@ TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     );
 
     this->setSelectionMode(QAbstractItemView::NoSelection);
+
+    connect(this, &QTableWidget::cellChanged, this, &TableWidget::check);
+}
+
+void TableWidget::check() {
+    for (int row = 1; row < this->rowCount(); ++row) {
+        for (int column = 1; column < this->columnCount(); ++column) {
+            if (this->item(row, column) != nullptr && this->item(row, column)->text().contains('!')) {
+                emit correct();
+                return;
+            }
+        }
+    }
+    emit incorrect();
 }
 
 void TableWidget::addState() {
@@ -135,10 +152,13 @@ int TableWidget::getColumn(const QString& s) const {
     return -1;
 }
 
-QString TableWidget::getCommand(const QChar& letter, const int state) const {
+QString TableWidget::getCommand(const QChar& letter, const int state) {
     const auto cell = this->item(state + 1, getColumn(letter));
     clearPaint();
     paint(cell);
+    if (cell == nullptr) {
+        return "FUCK";
+    }
     return cell->text();
 }
 
@@ -156,6 +176,6 @@ void TableWidget::paint(QTableWidgetItem* a) {
     if (a != nullptr) {
         a->setBackground(QColor(Qt::green));
     } else {
-        throw std::runtime_error("Cat is catched");
+        emit not_found();
     }
 }
