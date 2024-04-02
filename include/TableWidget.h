@@ -21,6 +21,7 @@ class TableWidget final : public QTableWidget {
   signals:
     void correct();
     void incorrect();
+    void symbol();
     void not_found();
   private:
     [[nodiscard]] int getColumn(const QString&) const;

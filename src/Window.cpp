@@ -114,7 +114,6 @@ void Window::SecondScreen() {
     first->setWordWrap(true);
     first->setObjectName("Err");
     first->setStyleSheet(central->styleSheet());
-    connect(table, &TableWidget::correct, first, &QLabel::hide);
     connect(table, &TableWidget::incorrect, first, &QLabel::show);
     objects["firstErr"] = first;
 
@@ -127,6 +126,21 @@ void Window::SecondScreen() {
     second->setStyleSheet(central->styleSheet());
     connect(table, &TableWidget::not_found, second, &QLabel::show);
     objects["secondErr"] = second;
+
+
+    third->setText("Incorrect symbol in the cell");
+    third->setGeometry({
+        530, 190, 160, 60
+    });
+    third->setWordWrap(true);
+    third->setObjectName("Err");
+    third->setStyleSheet(central->styleSheet());
+    connect(table, &TableWidget::symbol, third, &QLabel::show);
+    objects["thirdErr"] = third;
+    connect(table, &TableWidget::correct, [first, third] {
+        first->hide();
+        third->hide();
+    });
 
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
@@ -291,6 +305,11 @@ void Window::SecondScreen() {
         objects["Step"]->setEnabled(false);
         objects["Run"]->setEnabled(false);
     });
+
+    connect(table, &TableWidget::symbol, [this]{
+        objects["Step"]->setEnabled(false);
+        objects["Run"]->setEnabled(false);
+    });
 }
 
 void Window::ShowSecondScreen() {
@@ -323,5 +342,6 @@ void Window::HideSecondScreen() {
     objects["RibbonStr"]->hide();
     objects["firstErr"]->hide();
     objects["secondErr"]->hide();
+    objects["thirdErr"]->hide();
     apparatus->hide();
 }

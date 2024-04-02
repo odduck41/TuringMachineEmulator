@@ -5,8 +5,6 @@
 #include <QHBoxLayout>
 
 
-// ToDo: check if table has at least one !
-
 TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
     prnt = parent;
 
@@ -38,15 +36,37 @@ TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
 }
 
 void TableWidget::check() {
+    bool flag = false;
     for (int row = 1; row < this->rowCount(); ++row) {
         for (int column = 1; column < this->columnCount(); ++column) {
-            if (this->item(row, column) != nullptr && this->item(row, column)->text().contains('!')) {
-                emit correct();
-                return;
+            if (this->item(row, column) != nullptr) {
+                if (this->item(row, column)->text().contains('!')) {
+                    flag = true;
+                }
+                const auto txt = this->item(row, column)->text();
+                QString skip = "1234567890!><";
+                for (auto& letter: txt) {
+                    if (skip.contains(letter)) continue;
+                    bool is = false;
+                    for (int ch = 1; ch < this->columnCount(); ++ch) {
+                        if (letter == this->item(0, ch)->text()) {
+                            is = true;
+                        }
+                    }
+                    if (!is) {
+                        emit symbol();
+                        return;
+                    }
+                }
+
             }
         }
     }
-    emit incorrect();
+    if (!flag) {
+        emit incorrect();
+    } else {
+        emit correct();
+    }
 }
 
 void TableWidget::addState() {

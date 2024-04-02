@@ -10,7 +10,6 @@
 
 
 // ToDo: after programm finished check if alphabet in ribbon is correct
-// ToDo: check if command not defined
 
 Apparatus::Apparatus(QWidget* parent) : QLabel(parent) {
     this->setGeometry({
