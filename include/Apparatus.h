@@ -17,7 +17,10 @@ class Apparatus final : public QLabel {
     void run();
     void inc();
     void dec();
+    void checker();
+    QString rbn{};
   signals:
+    void err();
     void finish();
     void p_started();
     void p_finished();

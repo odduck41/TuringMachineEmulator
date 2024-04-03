@@ -82,6 +82,7 @@ void Window::FirstScreen() {
     connect(SetAlph, &QPushButton::pressed, [this, Ribbon, Head]{
             HideFirstScreen();
             table->updateAlph(Ribbon->text(), Head->text());
+            apparatus->rbn = Ribbon->text();
             ShowSecondScreen();
         }
     );
@@ -106,7 +107,7 @@ void Window::SecondScreen() {
     table->style = this->StyleSheet;
 
     auto *first = new QLabel(central), *second = new QLabel(central);
-    auto *third = new QLabel(central);
+    auto *third = new QLabel(central), *fourth = new QLabel(central);
     first->setText("Table hasn't got !, so program never finish");
     first->setGeometry({
        530, 190, 160, 60
@@ -114,7 +115,12 @@ void Window::SecondScreen() {
     first->setWordWrap(true);
     first->setObjectName("Err");
     first->setStyleSheet(central->styleSheet());
-    connect(table, &TableWidget::incorrect, first, &QLabel::show);
+    connect(table, &TableWidget::incorrect, [first, second, third, fourth]{
+        first->show();
+        second->hide();
+        third->hide();
+        fourth->hide();
+    });
     objects["firstErr"] = first;
 
     second->setText("Cell is empty");
@@ -124,7 +130,12 @@ void Window::SecondScreen() {
     second->setWordWrap(true);
     second->setObjectName("Err");
     second->setStyleSheet(central->styleSheet());
-    connect(table, &TableWidget::not_found, second, &QLabel::show);
+    connect(table, &TableWidget::not_found, [first, second, third, fourth]{
+        first->hide();
+        second->show();
+        third->hide();
+        fourth->hide();
+    });
     objects["secondErr"] = second;
 
 
@@ -135,12 +146,33 @@ void Window::SecondScreen() {
     third->setWordWrap(true);
     third->setObjectName("Err");
     third->setStyleSheet(central->styleSheet());
-    connect(table, &TableWidget::symbol, third, &QLabel::show);
+    connect(table, &TableWidget::symbol, [first, second, third, fourth] {
+        first->hide();
+        second->hide();
+        third->show();
+        fourth->hide();
+    });
     objects["thirdErr"] = third;
     connect(table, &TableWidget::correct, [first, third] {
         first->hide();
         third->hide();
     });
+
+
+    fourth->setText("Ribbon contais symbols not from Ribbon alphabet");
+    fourth->setGeometry({
+        530, 190, 160, 60
+    });
+    fourth->setWordWrap(true);
+    fourth->setObjectName("Err");
+    fourth->setStyleSheet(central->styleSheet());
+    connect(apparatus, &Apparatus::err, [first, second, third, fourth] {
+        first->hide();
+        second->hide();
+        third->hide();
+        fourth->show();
+    });
+    objects["fourthErr"] = fourth;
 
     const auto reset = new QPushButton(central);
     objects["Reset"] = reset;
@@ -180,6 +212,7 @@ void Window::SecondScreen() {
     });
     Step->setStyleSheet(this->StyleSheet);
     connect(Step, &QPushButton::pressed, [this] {
+        objects["fourthErr"]->hide();
         objects["secondErr"]->hide();
         if (apparatus->steps == 0) {
             const auto timer = new QTimer;
@@ -207,6 +240,7 @@ void Window::SecondScreen() {
     });
     Run->setStyleSheet(this->StyleSheet);
     connect(Run, &QPushButton::pressed, [this, Pause]{
+        objects["fourthErr"]->hide();
         objects["secondErr"]->hide();
         const auto timer = new QTimer;
         connect(timer, &QTimer::timeout, apparatus, &Apparatus::run);
@@ -343,5 +377,6 @@ void Window::HideSecondScreen() {
     objects["firstErr"]->hide();
     objects["secondErr"]->hide();
     objects["thirdErr"]->hide();
+    objects["fourthErr"]->hide();
     apparatus->hide();
 }

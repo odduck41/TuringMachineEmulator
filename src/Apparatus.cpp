@@ -105,10 +105,12 @@ void Apparatus::step() {
     const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, TablePos)->children()[0]);
     QString command = table->getCommand(cell->text()[0], State);
     if (command == "FUCK") {
+        emit finish();
         return;
     }
     if (command == "!" || contains) {
         steps = 0;
+        checker();
         emit finish();
         return;
     }
@@ -327,4 +329,14 @@ void Apparatus::run() {
     steps = -1;
     emit p_started();
     step();
+}
+
+void Apparatus::checker() {
+    for (int i = 0; i < Ribbon->columnCount(); ++i) {
+        const auto cell = dynamic_cast<QLabel*>(Ribbon->cellWidget(0, i)->children()[0]);
+        if (cell->text() == "λ") continue;
+        if (!rbn.contains(cell->text())) {
+            emit err();
+        }
+    }
 }
