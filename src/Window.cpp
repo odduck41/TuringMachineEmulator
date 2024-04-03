@@ -251,6 +251,7 @@ void Window::SecondScreen() {
         });
         connect(Pause, &QPushButton::pressed,  [this, timer] {
            timer->stop();
+           table->checking = true;
            emit apparatus->p_finished();
         });
         timer->start();
@@ -325,7 +326,8 @@ void Window::SecondScreen() {
     connect(RibbonStr, &QLineEdit::returnPressed, [this, RibbonStr]{
         if (RibbonStr->objectName() == "") apparatus->SetString(RibbonStr->text());
     });
-    connect(ResetProgram, &QPushButton::pressed, [second, RibbonStr] {
+    connect(ResetProgram, &QPushButton::pressed, [second, RibbonStr, this] {
+        table->checking = true;
         second->hide();
         emit RibbonStr->returnPressed();
     });

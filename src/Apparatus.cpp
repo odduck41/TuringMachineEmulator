@@ -99,6 +99,7 @@ void Apparatus::dec() {
 }
 
 void Apparatus::step() {
+    table->checking = false;
     updated = false;
     // command := {((symbol & ![<, >]) |& [<, >] |& state) | (!)}, 1 <= size <= 3
     Ribbon->horizontalScrollBar()->setValue(TableScrollBar);
@@ -106,12 +107,14 @@ void Apparatus::step() {
     QString command = table->getCommand(cell->text()[0], State);
     if (command == "FUCK") {
         emit finish();
+        table->checking = true;
         return;
     }
     if (command == "!" || contains) {
         steps = 0;
         checker();
         emit finish();
+        table->checking = true;
         return;
     }
     contains = false;
@@ -158,6 +161,7 @@ void Apparatus::step() {
         return;
     }
     if (steps == 0) {
+        table->checking = true;
         emit finish();
     }
 }

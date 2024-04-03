@@ -18,6 +18,7 @@ class TableWidget final : public QTableWidget {
     void check();
     TableWidget& operator=(const TableWidget&);
     QString style{};
+    bool checking = true;
   signals:
     void correct();
     void incorrect();

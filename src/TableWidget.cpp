@@ -36,6 +36,7 @@ TableWidget::TableWidget(QWidget* parent) : QTableWidget(parent) {
 }
 
 void TableWidget::check() {
+    if (!checking) return;
     bool flag = false;
     for (int row = 1; row < this->rowCount(); ++row) {
         for (int column = 1; column < this->columnCount(); ++column) {
