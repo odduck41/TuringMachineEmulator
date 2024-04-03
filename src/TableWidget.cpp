@@ -44,7 +44,7 @@ void TableWidget::check() {
                     flag = true;
                 }
                 const auto txt = this->item(row, column)->text();
-                QString skip = "1234567890!><";
+                QString skip = "1234567890!><\\";
                 for (auto& letter: txt) {
                     if (skip.contains(letter)) continue;
                     bool is = false;
