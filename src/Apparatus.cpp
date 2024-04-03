@@ -87,7 +87,7 @@ void Apparatus::SetString(const QString& str) {
 }
 
 void Apparatus::inc() {
-    if (speed < 2) {
+    if (speed < 5) {
         speed += 0.1;
     }
 }
@@ -110,6 +110,12 @@ void Apparatus::step() {
         table->checking = true;
         return;
     }
+    if (command.size() == 0) {
+        emit finish();
+        emit table->not_found();
+        table->checking = true;
+        return;
+    }
     if (command == "!" || contains) {
         steps = 0;
         checker();
@@ -118,6 +124,16 @@ void Apparatus::step() {
         return;
     }
     contains = false;
+    bool is_i = true;
+    for (auto& i: command) {
+        if (i < '0' || i > '9') {
+            is_i = false;
+        }
+    }
+    if (is_i) {
+        State = command.toInt();
+        return;
+    }
     if (command[0] == '>' || command[0] == '<') {
         if (command[0] == '>') GoRight();
         else GoLeft();
